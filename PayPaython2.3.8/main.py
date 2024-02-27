@@ -121,13 +121,15 @@ class PayPay:
         info=self.session.get(f"https://www.paypay.ne.jp/app/v2/p2p-api/getP2PLinkInfo?verificationCode={pcode}",headers=headers,proxies=self.proxy)
         return info.json()
     
-    def receive(self,pcode:str,password:str="4602",info:dict=None) -> dict:
-        try:
-            if not len(password)==4:
-                raise PayPayPasswordError("パスワードの値がおかしいです！")
-            int(password)
-        except:
-            raise PayPayPasswordError("パスワードの値がおかしいです！")
+    def receive(self,pcode:str,password:str=None,info:dict=None) -> dict:
+        if not password: #passwordに初期値を設定するべきではないため、Default値をNonetype にして先に判定
+                raise PayPayPasswordError("パスワードが入力されていません。")
+        if not password.isdigit():
+                raise PayPayPasswordError("パスワードが整数ではありません。")
+        if not len(password) == 4:
+                raise PayPayPasswordError("パスワードが4桁ではありません。")
+        else:
+                int(password)
         if info==None:
             info=self.session.get(f"https://www.paypay.ne.jp/app/v2/p2p-api/getP2PLinkInfo?verificationCode={pcode}",headers=headers,proxies=self.proxy).json()
         recevej = {
