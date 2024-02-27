@@ -95,13 +95,14 @@ class PayPay:
         return history.json()
     
     def create_link(self,kingaku:int,password:str="none") -> dict:
-        try:
-            if not len(password)==4:
-                raise PayPayPasswordError("パスワードの値がおかしいです！")
-            if not password=="none":
+        if not password:
+                raise PayPayPasswordError("パスワードが入力されていません。")
+        if not password.isdigit():
+                raise PayPayPasswordError("パスワードが整数ではありません。")
+        if not len(password) == 4:
+                raise PayPayPasswordError("パスワードが4桁ではありません。")
+        else:
                 int(password)
-        except:
-            raise PayPayPasswordError("パスワードの値がおかしいです！")
         clink = {
             "androidMinimumVersion": "3.45.0",
             "requestId": str(uuid.uuid4()),
